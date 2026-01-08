@@ -9,7 +9,7 @@ import connectDB from "./config/db";
 const PORT = process.env.PORT || 5000;
 
 // For local development only
-if (process.env.NODE_ENV !== "production") {
+
   const startServer = async () => {
     try {
       await connectDB();
@@ -30,7 +30,7 @@ if (process.env.NODE_ENV !== "production") {
   };
 
   startServer();
-}
+
 
 // Export app for Vercel serverless runtime
 export default app;
