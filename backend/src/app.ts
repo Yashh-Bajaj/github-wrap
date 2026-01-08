@@ -1,8 +1,25 @@
 import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import wrappedRoutes from "./routes/wrapped.routes";
+import connectDB from "./config/db";
 
 const app = express();
+
+// Lazy MongoDB initialization (connect on first request for serverless)
+let mongoInitialized = false;
+
+app.use(async (req: Request, res: Response, next: NextFunction) => {
+  if (!mongoInitialized && process.env.NODE_ENV === "production") {
+    try {
+      await connectDB();
+      mongoInitialized = true;
+    } catch (error) {
+      console.error("MongoDB init error:", error);
+      return res.status(503).json({ error: "Database unavailable" });
+    }
+  }
+  next();
+});
 
 // Middleware
 app.use(cors({
@@ -12,9 +29,12 @@ app.use(cors({
       'http://localhost:5173',
       'http://127.0.0.1:3000',
       'http://127.0.0.1:5173',
+      /\.vercel\.app$/,  // Allow Vercel deployments
     ];
     
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+    if (!origin || allowedOrigins.some(o => 
+      typeof o === 'string' ? o === origin : o.test(origin)
+    )) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));

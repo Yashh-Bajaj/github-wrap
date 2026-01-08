@@ -8,25 +8,29 @@ import connectDB from "./config/db";
 
 const PORT = process.env.PORT || 5000;
 
-const startServer = async () => {
-  try {
-    // Connect to MongoDB
-    await connectDB();
+// For local development only
+if (process.env.NODE_ENV !== "production") {
+  const startServer = async () => {
+    try {
+      await connectDB();
 
-    // Start Express server
-    app.listen(PORT, () => {
-      console.log(`
+      app.listen(PORT, () => {
+        console.log(`
 ╔════════════════════════════════════╗
 ║   GitHub Wrapped Backend Running   ║
 ║   Port: ${PORT}                          
 ║   Environment: ${process.env.NODE_ENV || "development"}
 ╚════════════════════════════════════╝
-      `);
-    });
-  } catch (error) {
-    console.error("Failed to start server:", error);
-    process.exit(1);
-  }
-};
+        `);
+      });
+    } catch (error) {
+      console.error("Failed to start server:", error);
+      process.exit(1);
+    }
+  };
 
-startServer();
+  startServer();
+}
+
+// Export app for Vercel serverless runtime
+export default app;
