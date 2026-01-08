@@ -1,36 +1,71 @@
-import dotenv from "dotenv";
+import express, { Request, Response, NextFunction } from "express";
+import cors from "cors";
+import wrappedRoutes from "./routes/wrapped.routes";
 
-// Load environment variables as early as possible
-dotenv.config();
+const app = express();
 
-import app from "./app";
-import connectDB from "./config/db";
+/**
+ * CORS configuration
+ */
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      const allowedOrigins = [
+        "http://localhost:3000",
+        "http://localhost:5173",
+        "http://127.0.0.1:3000",
+        "http://127.0.0.1:5173",
+        /\.vercel\.app$/,
+      ];
 
-const PORT = process.env.PORT || 5000;
+      if (
+        !origin ||
+        allowedOrigins.some((o) =>
+          typeof o === "string" ? o === origin : o.test(origin)
+        )
+      ) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
 
-// Start server ONLY in non-Vercel environments
-if (process.env.VERCEL !== "1") {
-  const startServer = async () => {
-    try {
-      await connectDB();
+app.use(express.json());
 
-      app.listen(PORT, () => {
-        console.log(`
-╔════════════════════════════════════╗
-║   GitHub Wrapped Backend Running   ║
-║   Port: ${PORT}
-║   Environment: ${process.env.NODE_ENV || "development"}
-╚════════════════════════════════════╝
-        `);
-      });
-    } catch (error) {
-      console.error("Failed to start server:", error);
-      process.exit(1);
-    }
-  };
+/**
+ * Routes
+ */
+app.use("/api/wrapped", wrappedRoutes);
 
-  startServer();
-}
+/**
+ * Health check
+ */
+app.get("/health", (_req: Request, res: Response) => {
+  res.status(200).json({ status: "ok" });
+});
 
-// Export app for Vercel serverless runtime
+/**
+ * 404 handler
+ */
+app.use((_req: Request, res: Response) => {
+  res.status(404).json({ error: "Route not found" });
+});
+
+/**
+ * Global error handler
+ */
+app.use(
+  (err: any, _req: Request, res: Response, _next: NextFunction) => {
+    console.error("Error:", err);
+
+    res.status(err.statusCode || 500).json({
+      error: err.message || "Internal Server Error",
+      ...(process.env.NODE_ENV === "development" && { stack: err.stack }),
+    });
+  }
+);
+
 export default app;

@@ -5,21 +5,6 @@ import connectDB from "./config/db";
 
 const app = express();
 
-// Lazy MongoDB initialization (connect on first request for serverless)
-let mongoInitialized = false;
-
-app.use(async (_req: Request, res: Response, next: NextFunction) => {
-  if (!mongoInitialized && process.env.NODE_ENV === "production") {
-    try {
-      await connectDB();
-      mongoInitialized = true;
-    } catch (error) {
-      console.error("MongoDB init error:", error);
-      return res.status(503).json({ error: "Database unavailable" });
-    }
-  }
-  return next();
-});
 
 // Middleware
 app.use(cors({
