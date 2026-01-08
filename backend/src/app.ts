@@ -8,7 +8,7 @@ const app = express();
 // Lazy MongoDB initialization (connect on first request for serverless)
 let mongoInitialized = false;
 
-app.use(async (req: Request, res: Response, next: NextFunction) => {
+app.use(async (_req: Request, res: Response, next: NextFunction) => {
   if (!mongoInitialized && process.env.NODE_ENV === "production") {
     try {
       await connectDB();
@@ -18,7 +18,7 @@ app.use(async (req: Request, res: Response, next: NextFunction) => {
       return res.status(503).json({ error: "Database unavailable" });
     }
   }
-  next();
+  return next();
 });
 
 // Middleware
