@@ -1,0 +1,104 @@
+.error-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 500px;
+  padding: 40px;
+  animation: slideInUp 0.6s ease-out;
+}
+
+.error-card {
+  background: rgba(20, 20, 40, 0.6);
+  backdrop-filter: blur(10px);
+  border: 2px solid #ff006e;
+  border-radius: 20px;
+  padding: 50px;
+  max-width: 500px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(255, 0, 110, 0.15);
+  animation: scaleIn 0.5s ease-out;
+}
+
+.error-icon {
+  font-size: 80px;
+  margin-bottom: 20px;
+  animation: bounce 0.6s ease-out infinite alternate;
+}
+
+@keyframes bounce {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-15px);
+  }
+}
+
+.error-title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #ff006e;
+  margin-bottom: 20px;
+  font-family: 'Fredoka', sans-serif;
+}
+
+.error-message {
+  font-size: 1.1rem;
+  color: #e0e0e0;
+  margin-bottom: 25px;
+  line-height: 1.6;
+  font-weight: 600;
+}
+
+.error-details {
+  background: rgba(255, 0, 110, 0.1);
+  border-left: 3px solid #ff006e;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+}
+
+.error-code {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.9rem;
+  color: #fb5607;
+  word-break: break-word;
+}
+
+.error-button {
+  padding: 14px 40px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #ff006e, #8338ec);
+  color: #fff;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  font-family: 'Fredoka', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.error-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(255, 0, 110, 0.3);
+  background: linear-gradient(135deg, #8338ec, #3a86ff);
+}
+
+@media (max-width: 600px) {
+  .error-card {
+    padding: 35px 25px;
+  }
+
+  .error-icon {
+    font-size: 60px;
+  }
+
+  .error-title {
+    font-size: 1.5rem;
+  }
+
+  .error-message {
+    font-size: 1rem;
+  }
+}
