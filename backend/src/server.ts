@@ -8,8 +8,8 @@ import connectDB from "./config/db";
 
 const PORT = process.env.PORT || 5000;
 
-// For local development only
-
+// Start server ONLY in non-Vercel environments
+if (process.env.VERCEL !== "1") {
   const startServer = async () => {
     try {
       await connectDB();
@@ -18,7 +18,7 @@ const PORT = process.env.PORT || 5000;
         console.log(`
 ╔════════════════════════════════════╗
 ║   GitHub Wrapped Backend Running   ║
-║   Port: ${PORT}                          
+║   Port: ${PORT}
 ║   Environment: ${process.env.NODE_ENV || "development"}
 ╚════════════════════════════════════╝
         `);
@@ -30,7 +30,7 @@ const PORT = process.env.PORT || 5000;
   };
 
   startServer();
-
+}
 
 // Export app for Vercel serverless runtime
 export default app;
