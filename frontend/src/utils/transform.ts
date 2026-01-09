@@ -11,6 +11,7 @@ const fullMonthNames = [
 ];
 
 export const transformBackendData = (backendData: BackendWrappedData): WrappedData => {
+  console.log("Transforming backend data:", backendData);
   const { insights, username, year } = backendData;
  // console.log("Backend Insights--------", insights);
  // console.log("The complete backend data ---",backendData)
@@ -172,7 +173,49 @@ export const transformBackendData = (backendData: BackendWrappedData): WrappedDa
     });
   }
 
-  // Prioritize and limit to top 6 insights (most important ones)
+  // Add insights from advanced data
+  if (insights.advanced?.longestStreak?.days > 0) {
+    insightsArray.push({
+      text: `${insights.advanced.longestStreak.days} day streak - Unstoppable!`,
+      category: 'consistency',
+      emoji: '🔥'
+    });
+  }
+
+  if (insights.advanced?.bestDayOfWeek) {
+    insightsArray.push({
+      text: `${insights.advanced.bestDayOfWeek.day} is your power day!`,
+      category: 'behavior',
+      emoji: '⚡'
+    });
+  }
+
+  if (insights.advanced?.topics?.topTopics?.length > 0) {
+    const topTopic = insights.advanced.topics.topTopics[0];
+    insightsArray.push({
+      text: `"${topTopic.topic}" is your favorite topic`,
+      category: 'repository',
+      emoji: '🏷️'
+    });
+  }
+
+  if (insights.advanced?.forkStats?.mostForkedRepo) {
+    insightsArray.push({
+      text: `"${insights.advanced.forkStats.mostForkedRepo.name}" got forked ${insights.advanced.forkStats.mostForkedRepo.forks} times!`,
+      category: 'repository',
+      emoji: '🍴'
+    });
+  }
+
+  if (insights.advanced?.repositoryGrowth?.mostStarredNewRepo) {
+    insightsArray.push({
+      text: `New repo "${insights.advanced.repositoryGrowth.mostStarredNewRepo.name}" got ${insights.advanced.repositoryGrowth.mostStarredNewRepo.stars} stars!`,
+      category: 'repository',
+      emoji: '🌟'
+    });
+  }
+
+  // Prioritize and limit insights (most important ones)
   const priorityOrder = {
     'consistency': 0,  // Highest priority - consistency achievements are most impressive
     'activity': 1,     // Total commits and peak month
@@ -181,26 +224,59 @@ export const transformBackendData = (backendData: BackendWrappedData): WrappedDa
     'repository': 4    // Lowest priority - repos are less personal
   };
 
-  const sortedInsights = insightsArray.sort((a, b) => {
+  // Sort and limit insights
+  const finalSortedInsights = insightsArray.sort((a, b) => {
     const priorityA = priorityOrder[a.category];
     const priorityB = priorityOrder[b.category];
     return priorityA - priorityB;
-  }).slice(0, 6); // Limit to max 6 insights
+  }).slice(0, 8); // Limit to max 8 insights
 
   return {
     username,
     year,
     totalCommits: insights.activity.totalCommits,
+    totalContributions: insights.activity.totalContributions || insights.activity.totalCommits,
     totalRepositories: insights.repositories.totalPublicRepos,
     totalStars: insights.repositories.mostStarredRepo?.stars || 0,
     topLanguages,
     topRepositories: insights.repositories.mostStarredRepo 
       ? [{ name: insights.repositories.mostStarredRepo.name, stars: insights.repositories.mostStarredRepo.stars }]
       : [],
-    totalPullRequests: 0, // Not available from backend, will default
-    totalIssues: 0, // Not available from backend, will default
+    totalPullRequests: insights.activity.pullRequests || 0,
+    totalIssues: insights.activity.issues || 0,
     contributionStreak: insights.activity.activeMonthsCount,
+    longestStreak: insights.advanced?.longestStreak?.days || 0,
+    bestDayOfWeek: insights.advanced?.bestDayOfWeek?.day || null,
     monthlyBreakdown,
-    insights: sortedInsights,
+    insights: finalSortedInsights,
+    profile: {
+      accountAge: insights.profile?.accountAge || null,
+      followers: insights.profile?.followers || 0,
+      following: insights.profile?.following || 0,
+      hasBio: insights.profile?.hasBio || false,
+      hasCompany: insights.profile?.hasCompany || false,
+      hasLocation: insights.profile?.hasLocation || false,
+      bio: insights.profile?.bio || null,
+      company: insights.profile?.company || null,
+      location: insights.profile?.location || null,
+    },
+    topTopics: insights.advanced?.topics?.topTopics?.slice(0, 5) || [],
+    forkStats: {
+      totalForks: insights.advanced?.forkStats?.totalForks || 0,
+      averageForksPerRepo: insights.advanced?.forkStats?.averageForksPerRepo || 0,
+      mostForkedRepo: insights.advanced?.forkStats?.mostForkedRepo || null,
+    },
+    repositoryGrowth: {
+      reposCreatedInYear: insights.advanced?.repositoryGrowth?.reposCreatedInYear || 0,
+      totalStarsFromNewRepos: insights.advanced?.repositoryGrowth?.totalStarsFromNewRepos || 0,
+      mostStarredNewRepo: insights.advanced?.repositoryGrowth?.mostStarredNewRepo || null,
+    },
+    mostActiveRepo: insights.advanced?.mostActiveRepository || null,
+    licenses: {
+      topLicense: insights.advanced?.licenses?.topLicense || null,
+      licenseDistribution: insights.advanced?.licenses?.licenseDistribution || {},
+      noLicenseCount: insights.advanced?.licenses?.noLicenseCount || 0,
+      totalLicensed: insights.advanced?.licenses?.totalLicensed || 0,
+    },
   };
 };
