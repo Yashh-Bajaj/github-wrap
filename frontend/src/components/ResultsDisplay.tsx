@@ -15,7 +15,6 @@ export default function ResultsDisplay({ data, onReset }: ResultsDisplayProps) {
   const quote = getQuoteForCommits(data.totalCommits);
 
   useEffect(() => {
-    console.log("Data--------", data);
     const timer = setTimeout(() => setShowConfetti(false), 3000);
     return () => clearTimeout(timer);
   }, []);

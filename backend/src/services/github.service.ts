@@ -1,6 +1,7 @@
 import { gql } from "graphql-request";
 import { createGitHubClient } from "../config/github";
-
+import dotenv from "dotenv";
+dotenv.config();
 const githubToken = process.env.GITHUB_TOKEN;
 
 if (!githubToken) {

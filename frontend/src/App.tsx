@@ -21,11 +21,11 @@ function App() {
 
     try {
       const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-      console.log(`Fetching from API URL: ${apiUrl}`);
+      //console.log(`Fetching from API URL: ${apiUrl}`);
       const response = await fetch(
         `${apiUrl}/api/wrapped?username=${username}&year=${year}`
       );
-      console.log('Fetch response:', response);
+      //console.log('Fetch response:', response);
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(errorData.error || `User not found (${response.status})`);

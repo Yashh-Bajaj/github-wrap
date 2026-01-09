@@ -12,8 +12,8 @@ const fullMonthNames = [
 
 export const transformBackendData = (backendData: BackendWrappedData): WrappedData => {
   const { insights, username, year } = backendData;
-  console.log("Backend Insights--------", insights);
-  console.log("The complete backend data ---",backendData)
+ // console.log("Backend Insights--------", insights);
+ // console.log("The complete backend data ---",backendData)
   // Transform languages from distribution
   const topLanguages = Object.entries(insights.languages.languageDistribution)
     .map(([name, count]) => ({ name, count: count as number }))

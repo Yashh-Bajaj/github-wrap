@@ -42,7 +42,7 @@ export class WrappedService {
       GitHubService.fetchUserOverview(username),
       GitHubService.fetchUserContributions(username, year),
     ]);
-
+console.log("user overview and contributions--",userOverview,contributions)
     // 3. Compute insights
     const insights = this.computeInsights(userOverview, contributions, year);
 
@@ -150,6 +150,8 @@ export class WrappedService {
 
     return {
       totalCommits: contribData.totalCommitContributions,
+      pullRequests: contribData.totalPullRequestContributions,
+      issues: contribData.totalIssueContributions,
       commitsPerMonth,
       mostActiveMonth,
       activeMonthsCount,

@@ -44,6 +44,8 @@ export interface BackendWrappedData {
       commitsPerMonth: Record<string, number>;
       mostActiveMonth: string | null;
       activeMonthsCount: number;
+      pullRequests?: number;
+      issues?: number;
     };
     repositories: {
       totalPublicRepos: number;

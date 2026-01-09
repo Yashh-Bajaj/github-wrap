@@ -16,6 +16,8 @@ export interface WrappedResultDocument extends Document {
       commitsPerMonth: Record<string, number>;
       mostActiveMonth: string | null;
       activeMonthsCount: number;
+      pullRequests?: number
+      issues?: number
     };
 
     repositories: {
@@ -79,6 +81,8 @@ const WrappedResultSchema = new Schema<WrappedResultDocument>(
         commitsPerMonth: { type: Map, of: Number, required: true },
         mostActiveMonth: { type: String },
         activeMonthsCount: { type: Number, required: true },
+        pullRequests: { type: Number },
+        issues: { type: Number}
       },
 
       repositories: {
