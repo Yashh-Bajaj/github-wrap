@@ -11,7 +11,7 @@ const fullMonthNames = [
 ];
 
 export const transformBackendData = (backendData: BackendWrappedData): WrappedData => {
-  console.log("Transforming backend data:", backendData);
+ // console.log("Transforming backend data:", backendData);
   const { insights, username, year } = backendData;
  // console.log("Backend Insights--------", insights);
  // console.log("The complete backend data ---",backendData)
